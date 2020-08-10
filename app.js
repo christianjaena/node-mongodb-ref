@@ -1,10 +1,10 @@
-const express = require('express')
-const morgan = require('morgan')
-const mongoose = require('mongoose')
-const Blog = require('./models/blog')
-const dbURI = require('./mongodbURI')
+const express = require('express');
+const morgan = require('morgan');
+const mongoose = require('mongoose');
+const dbURI = require('./mongodbURI');
+const blogRoutes = require('./routes/blogRoutes');
 // express app
-const app = express()
+const app = express();
 
 // mongodb uri
 mongoose
@@ -12,23 +12,23 @@ mongoose
 	.then(result => {
 		// ? listen to server in port 3000
 		// * listen to requests only after db connection
-		console.log('connected to db')
-		app.listen(3000)
+		console.log('connected to db');
+		app.listen(3000);
 	})
-	.catch(err => console.log(err))
+	.catch(err => console.log(err));
 // register view engine
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
 
 // for new folder name
 // app.set('views', 'myviews');
 
-app.use(morgan('dev'))
+app.use(morgan('dev'));
 
 // url encoded
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
 
 // ? STATIC FILES
-app.use(express.static('public'))
+app.use(express.static('public'));
 // * CUSTOM MIDDLEWARE
 // app.use((req, res, next) => {
 // 	console.log('new request made:');
@@ -71,6 +71,9 @@ app.use(express.static('public'))
 // 		.catch(err => console.log(err));
 // });
 
+// ? ROUTES MVC
+app.use('/blogs/', blogRoutes);
+
 // routes
 app.get('/', (req, res) => {
 	// * res.sendFile('./files/index.html', { root: __dirname });
@@ -95,49 +98,13 @@ app.get('/', (req, res) => {
 	// ];
 	// res.render('index', { title: 'Home', blogs });
 
-	res.redirect('/blogs')
-})
-
-app.get('/blogs', (req, res) => {
-	Blog.find()
-		.sort({ createdAt: -1 })
-		.then(result => res.render('index', { title: 'All blogs', blogs: result }))
-		.catch(err => console.log(err))
-})
-
-app.get('/blogs/:id', (req, res) => {
-	const id = req.params.id
-	Blog.findById(id)
-		.then(result => {
-			res.render('details', { blog: result, title: 'Blog Details' })
-		})
-		.catch(err => console.log(err))
-})
-
-app.post('/blogs', (req, res) => {
-	const blog = new Blog(req.body)
-	blog
-		.save()
-		.then(result => res.redirect('/blogs'))
-		.catch(err => console.log(err))
-})
-
-app.delete('/blogs/:id', (req, res) => {
-	const id = req.params.id
-
-	Blog.findByIdAndDelete(id)
-		.then(result => res.json({ redirect: '/blogs' }))
-		.catch(err => console.log(err))
-})
+	res.redirect('/blogs');
+});
 
 app.get('/about', (req, res) => {
 	// res.sendFile('./files/about.html', { root: __dirname });
-	res.render('about', { title: 'About' })
-})
-
-app.get('/blogs/create', (req, res) => {
-	res.render('create', { title: 'Create Blog' })
-})
+	res.render('about', { title: 'About' });
+});
 
 // redirect
 // app.get('/about-us', (req, res) => {
@@ -146,5 +113,5 @@ app.get('/blogs/create', (req, res) => {
 
 // default case
 app.use((req, res) => {
-	res.status(404).render('404', { title: 'Error 404' })
-})
+	res.status(404).render('404', { title: 'Error 404' });
+});

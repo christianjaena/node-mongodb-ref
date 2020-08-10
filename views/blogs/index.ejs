@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-	<%- include('./partial/header.ejs') %>
+	<%- include('../partial/header.ejs') %>
 	<body>
-		<%- include('./partial/nav.ejs') %>
+		<%- include('../partial/nav.ejs') %>
 		<div class="blogs content">
 			<h2>All blogs</h2>
 			<% if (blogs.length > 0) { %> <% blogs.forEach(blog => { %>
@@ -14,6 +14,6 @@
 			<p>No blogs displayed</p>
 			<% } %>
 		</div>
-		<%- include('./partial/footer.ejs') %>
+		<%- include('../partial/footer.ejs') %>
 	</body>
 </html>
